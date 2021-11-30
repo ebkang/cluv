@@ -31,8 +31,6 @@ public class OrderService {
 
     private final ItemImgRepository itemImgRepository;
 
-    private final OrderItemRepository orderItemRepository;
-
     public Long order(OrderDto orderDto, String email){
 
         Item item = itemRepository.findById(orderDto.getItemId())

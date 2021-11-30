@@ -2,6 +2,7 @@ package com.shop.controller;
 
 import com.shop.dto.*;
 import com.shop.service.OrderService;
+import com.shop.service.ReviewImgService;
 import com.shop.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,8 +30,9 @@ public class ReviewController {
 
     private final OrderService orderService;
     private final ReviewService reviewService;
+    private final ReviewImgService reviewImgService;
 
-    @GetMapping("/reviews")
+    @GetMapping(value = {"/reviews", "reviews/{page}"})
     public String reviews(@PathVariable("page") Optional<Integer> page, Principal principal, Model model){
 
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 4);
@@ -59,10 +61,14 @@ public class ReviewController {
             return "review/reviewWrite";
         }
 
-        if( reviewFormDto.getComment() == null){
-            model.addAttribute("errorMessage", "후기 작성은 필수 입력 값입니다.");
+        if ( reviewImgFile.get(0).isEmpty()) {
+            model.addAttribute("errorMessage", "사진 등록은 필수 입력 값입니다.");
             return "review/reviewWrite";
+        }
 
+        if( reviewFormDto.getComment().length() == 0){
+            model.addAttribute("errorMessage", "리뷰 작성은 필수 입력 값입니다.");
+            return "review/reviewWrite";
         }
 
         try{
@@ -115,6 +121,7 @@ public class ReviewController {
     @GetMapping("/reviews/delete/{itemId}")
     public String reviewDelete(@PathVariable("itemId") Long orderItemId, ReviewFormDto reviewFormDto){
         reviewService.deleteReview(orderItemId, reviewFormDto);
+        reviewImgService.deleteReviewImg(orderItemId);
 
         return "redirect:/reviews";
     }

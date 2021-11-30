@@ -1,5 +1,6 @@
 package com.shop.service;
 
+import com.shop.dto.ReviewFormDto;
 import com.shop.entity.ReviewImg;
 import com.shop.repository.ReviewImgRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +35,6 @@ public class ReviewImgService {
             reviewImgUrl = "/images/review/" + reviewImgName;
         }
 
-        System.out.println("reviewOriImgName : " + reviewOriImgName);
-        System.out.println("reviewImgName : " + reviewImgName);
-        System.out.println("reviewImgUrl : " + reviewImgUrl);
-
         //상품 이미지 정보 저장
         reviewImg.updateReviewImg(reviewOriImgName, reviewImgName, reviewImgUrl);
         reviewImgRepository.save(reviewImg);
@@ -57,5 +54,10 @@ public class ReviewImgService {
             String reviewImgUrl = "/images/review/" + reviewImgName;
             savedReviewImg.updateReviewImg(reviewOriImgName, reviewImgName, reviewImgUrl);
         }
+    }
+
+    public void deleteReviewImg(Long orderItemId){
+        ReviewImg reviewImg = reviewImgRepository.findByOrderItemId(orderItemId);
+        reviewImgRepository.delete(reviewImg);
     }
 }

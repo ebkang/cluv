@@ -13,6 +13,14 @@
 
     <script th:inline="javascript">
 
+            $(document).ready(function(){
+                var errorMessage = [[${errorMessage}]];
+                if(errorMessage != null){
+                    alert(errorMessage);
+                }
+                bindDomEvent();
+            });
+
             function bindDomEvent(){
                 $(".custom-file-input").on("change", function() {
                     var fileName = $(this).val().split("\\").pop();  //이미지 파일명
@@ -64,6 +72,9 @@
         .img-div {
             margin-bottom : 10px
         }
+        .fieldError {
+            color: #bd2130;
+        }
     </style>
 </th:block>
 
@@ -80,7 +91,7 @@
             <div class="form-group">
                 <div class="custom-file img-div">
                     <input type="file" class="custom-file-input" name="reviewImgFile">
-                    <label class="custom-file-label" th:text="상품이미지"></label>
+                    <label class="custom-file-label" th:text="리뷰이미지"></label>
                 </div>
             </div>
         </div>
@@ -88,8 +99,8 @@
         <div th:if="${not #lists.isEmpty(reviewFormDto.reviewImgDtoList)}">
             <div class="form-group" th:each="reviewImgDto, status: ${reviewFormDto.reviewImgDtoList}">
                 <div class="custom-file img-div">
-                    <input type="file" class="custom-file-input" name="reviewImgFile">
-                    <label class="custom-file-label" th:text="${not #strings.isEmpty(reviewImgDto.reviewOriImgName)} ? ${reviewImgDto.reviewOriImgName} : '상품 이미지' + ${status.index+1}"></label>
+                    <input type="hidden" name="reviewImgIds" th:value="${reviewImgDto.id}">
+                    <label class="custom-file-label" th:text="${not #strings.isEmpty(reviewImgDto.reviewOriImgName)} ? ${reviewImgDto.reviewOriImgName} : '리뷰 이미지' + ${status.index+1}"></label>
                 </div>
             </div>
         </div>
@@ -100,6 +111,7 @@
             </div>
             <textarea th:field="*{comment}" class="form-control" aria-label="With textarea" placeholder="상품 후기를 남겨주세요."></textarea>
         </div>
+        <p th:if="${#fields.hasErrors('comment')}" th:errors="*{comment}" class="fieldError">Incorrect data</p>
 
         <div th:if="${#strings.isEmpty(reviewFormDto.comment)}" class="text-center mt-3">
             <button type="submit" th:formaction="@{'/reviews/new/' + ${reviewFormDto.reviewId} }" class="btn btn-primary btn-lg">저장</button>

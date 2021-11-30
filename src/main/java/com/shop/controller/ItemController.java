@@ -2,6 +2,7 @@ package com.shop.controller;
 
 import com.shop.dto.ItemFormDto;
 import com.shop.dto.ItemSearchDto;
+import com.shop.dto.ReviewImgDto;
 import com.shop.dto.ReviewItemDto;
 import com.shop.entity.Item;
 import com.shop.service.ItemService;
@@ -113,9 +114,11 @@ public class ItemController {
 
         ItemFormDto itemFormDto = itemService.getItemDtl(itemId);
         List<ReviewItemDto> orderItemDtoList = reviewService.getReviewItem(itemId);
+        List<ReviewImgDto> reviewImgDtoList = reviewService.getReviewItemImg(itemId);
 
         model.addAttribute("item", itemFormDto);
         model.addAttribute("orderItemList", orderItemDtoList);
+        model.addAttribute("reviewImgDtoList", reviewImgDtoList);
 
         return "item/itemDtl";
     }

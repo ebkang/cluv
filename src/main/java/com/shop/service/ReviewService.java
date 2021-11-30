@@ -68,9 +68,9 @@ public class ReviewService {
 
         List<Long> reviewImgIds = reviewFormDto.getReviewImgIds();
 
-//        for(int i = 0; i < reviewImgFile.size(); i++){
-//            reviewImgService.updateReviewImg(reviewImgIds.get(i), reviewImgFile.get(i));
-//        }
+        for(int i = 0; i < reviewImgFile.size(); i++){
+            reviewImgService.updateReviewImg(reviewImgIds.get(i), reviewImgFile.get(i));
+        }
 
         return orderItem.getId();
 
@@ -86,7 +86,7 @@ public class ReviewService {
 
     }
 
-    //상세 페이지에서 리뷰 보이게 하기(수정해야함)
+    //상세 페이지에서 리뷰 보이게 하기
     @Transactional(readOnly = true)
     public List<ReviewItemDto> getReviewItem(Long itemId){
 
@@ -102,6 +102,26 @@ public class ReviewService {
         }
 
         return reviewItemDtoList;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReviewImgDto> getReviewItemImg(Long itemId){
+        List<OrderItem> orderItems = orderItemRepository.findByItemIdAndReviewYn(itemId, "Y");
+        List<ReviewImgDto> reviewImgDtoList = new ArrayList<>();
+
+        for(OrderItem orderItem : orderItems){
+            Long orderItemId = orderItem.getId();
+            ReviewImg reviewImg = reviewImgRepository.findByOrderItemId(orderItemId);
+            ReviewImgDto reviewImgDto = new ReviewImgDto();
+            reviewImgDto.setId(reviewImg.getId());
+            reviewImgDto.setReviewImgName(reviewImg.getReviewImgName());
+            reviewImgDto.setReviewImgUrl(reviewImg.getReviewImgUrl());
+            reviewImgDto.setReviewOriImgName(reviewImg.getReviewOriImgName());
+
+            reviewImgDtoList.add(reviewImgDto);
+        }
+
+        return reviewImgDtoList;
     }
 
 }
